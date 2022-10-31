@@ -9,8 +9,6 @@ memory_controller::memory_controller(const CHAR* name) {
     GetWindowThreadProcessId(hwnd, &process_id);
     handle = OpenProcess(PROCESS_ALL_ACCESS, TRUE, process_id);
 }
-//memory_controller::memory_controller() {
-//}
 
 uintptr_t memory_controller::GetModuleBaseAddress(const char* module_name) {
     HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, process_id);
