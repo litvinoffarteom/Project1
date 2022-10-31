@@ -1,7 +1,3 @@
-//
-// Created by Админ on 29.10.2022.
-//
-
 #include "main_ch.h"
 
 void main_ch::set() {
