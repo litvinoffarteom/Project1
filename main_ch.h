@@ -1,7 +1,3 @@
-//
-// Created by Админ on 29.10.2022.
-//
-
 #ifndef PROJECT1_MAIN_CH_H
 #define PROJECT1_MAIN_CH_H
 #include "Windows.h"
