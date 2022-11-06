@@ -1,3 +1,7 @@
+//
+// Created by Админ on 29.10.2022.
+//
+
 #ifndef PROJECT1_MAIN_CH_H
 #define PROJECT1_MAIN_CH_H
 #include "Windows.h"
@@ -42,10 +46,14 @@ public:
 
     bool bunny_hop = false;
     bool trigger_bot = false;
+    bool teammates = false;
     bool radar_hack = false;
     bool anti_flash = false;
     bool chams = false;
     bool RCS = false;
+
+    bool legit_trigger_bot = false;
+    bool legit_bunny_hop = false;
     //bool anti_aim = false;
 
     memory_controller m;
@@ -71,6 +79,11 @@ public:
     void reset_chams();
     void printEntityList();
     void antiaim();
+    void printmyweapon();
+
+    static void delay(int d);
+    static void click();
+    void set_var(bool &var, int key);
 };
 
 

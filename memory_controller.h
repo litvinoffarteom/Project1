@@ -1,3 +1,7 @@
+//
+// Created by Админ on 24.10.2022.
+//
+
 #ifndef PROJECT1_MEMORY_CONTROLLER_H
 #define PROJECT1_MEMORY_CONTROLLER_H
 #include "include.h"

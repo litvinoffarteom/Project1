@@ -4,7 +4,7 @@
 const CHAR *name = "Counter-Strike: Global Offensive - Direct3D 9";
 
 int main() {
-
+    srand(time(NULL));
     main_ch cheat(name);
     cheat.print_cheat_menu();
     while (!GetAsyncKeyState(VK_INSERT)) {

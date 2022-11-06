@@ -1,74 +1,52 @@
 #include "main_ch.h"
 
+void main_ch::set_chams(DWORD entity, int r, int g, int b) {
+    m.WPM<int>(entity + 112, r);
+    m.WPM<int>(entity + 113, g);
+    m.WPM<int>(entity + 114, b);
+}
+
+void main_ch::reset_chams() {
+    for (int i = 0; i < 64; i++) {
+        auto entity = m.RPM<DWORD>(client + hazedumper::signatures::dwEntityList + i * 0x10);
+        set_chams(entity, 255, 255, 255);
+    }
+}
+
+void main_ch::delay(int d) {
+    if (d) {
+        Sleep(d);
+    }
+}
+
+void main_ch::click() {
+    mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
+    mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+}
+void main_ch::set_var(bool &var, int key){
+    if (GetKeyState(key)) {
+        if (!var) {
+            var = true;
+            print_cheat_menu();
+        }
+    } else {
+        if (var) {
+            var = false;
+            print_cheat_menu();
+        }
+    }
+}
 void main_ch::set() {
-    if (GetKeyState(VK_F1)) {
-        if (!radar_hack) {
-            radar_hack = true;
-            print_cheat_menu();
-        }
-    } else {
-        if (radar_hack) {
-            radar_hack = false;
-            print_cheat_menu();
-        }
-    }
-    if (GetKeyState(VK_F2)) {
-        if (!bunny_hop) {
-            bunny_hop = true;
-            print_cheat_menu();
-        }
-    } else {
-        if (bunny_hop) {
-            bunny_hop = false;
-            print_cheat_menu();
-        }
-    }
-    if (GetKeyState(VK_F3)) {
-        if (!trigger_bot) {
-            trigger_bot = true;
-            print_cheat_menu();
-        }
-    } else {
-        if (trigger_bot) {
-            trigger_bot = false;
-            print_cheat_menu();
-        }
-    }
-    if (GetKeyState(VK_F4)) {
-        if (!anti_flash) {
-            anti_flash = true;
-            print_cheat_menu();
-        }
-    } else {
-        if (anti_flash) {
-            anti_flash = false;
-            print_cheat_menu();
-        }
-    }
-    /*
-    if (GetKeyState(VK_F6)) {
-        if (!anti_aim) {
-            anti_aim = true;
-            print_cheat_menu();
-        }
-    } else {
-        if (anti_aim) {
-            anti_aim = false;
-            print_cheat_menu();
-        }
-    }
-     */
-    if (GetKeyState(VK_F7)) {
-        if (!RCS) {
-            RCS = true;
-            print_cheat_menu();
-        }
-    } else {
-        if (RCS) {
-            RCS = false;
-            print_cheat_menu();
-        }
-    }
+    set_var(radar_hack, VK_F1);
+    set_var(bunny_hop, VK_F2);
+    set_var(legit_bunny_hop, VK_HOME);
+    set_var(trigger_bot, VK_F3);
+    set_var(legit_trigger_bot, VK_END);
+    set_var(teammates, VK_DELETE);
+    set_var(anti_flash, VK_F4);
+    //set_var(anti_aim, VK_F6);
+    set_var(RCS, VK_F7);
+
     if (GetKeyState(VK_F8)) {
         if (!chams) {
             chams = true;
@@ -77,12 +55,7 @@ void main_ch::set() {
     } else {
         if (chams) {
             chams = false;
-            for (int i = 1; i < 64; i++) {
-                auto entity = m.RPM<DWORD>(client + hazedumper::signatures::dwEntityList + i * 0x10);
-                m.WPM<int>(entity + 112, 255);
-                m.WPM<int>(entity + 113, 255);
-                m.WPM<int>(entity + 114, 255);
-            }
+            reset_chams();
             print_cheat_menu();
         }
 
@@ -112,15 +85,20 @@ void main_ch::print_cheat_menu() {
               << chams
               << "\n -RCS (F7) " << RCS << std::endl << std::endl << "Settings: " << std::endl
               << " -MEGA Legit RCS (Only X)" << std::endl
-              << " -Legit RCS(Only Y) - F9" << std::endl << " -RCS(X and Y) - F11" << "\n \n Exit cheat - INSERT"
+              << " -Legit RCS(Only Y) - F9" << std::endl << " -RCS(X and Y) - F11" << std::endl
+              << " -Trigger bot and chams teammates " << teammates << std::endl << " -Legit trigger bot "
+              << legit_trigger_bot << std::endl << " -Legit bunny hop " << legit_bunny_hop
+              << "\n \n Exit cheat - INSERT"
               << std::endl << std::endl << std::endl << std::endl << std::endl << std::endl << std::endl << std::endl
               << std::string(120, '=');
 }
+
 main_ch::main_ch() {
     this->name = "Counter-Strike: Global Offensive - Direct3D 9";
     client = m.GetModuleBaseAddress("client.dll");
     engine = m.GetModuleBaseAddress("engine.dll");
 }
+
 main_ch::main_ch(const CHAR *name) {
 
     this->name = name;
@@ -142,19 +120,14 @@ void main_ch::radarhack() {
     }
 }
 
-void main_ch::set_chams(DWORD entity, int r, int g, int b) {
-    m.WPM<int>(entity + 112, r);
-    m.WPM<int>(entity + 113, g);
-    m.WPM<int>(entity + 114, b);
-}
+
 
 void main_ch::chams_func() {
     for (int i = 0; i < 64; i++) {
         auto local_player = m.RPM<DWORD>(client + hazedumper::signatures::dwLocalPlayer);
         auto entity = m.RPM<DWORD>(client + hazedumper::signatures::dwEntityList + i * 0x10);
-        auto eTeam = m.RPM<int>(entity + hazedumper::netvars::m_iTeamNum);
-        auto pTeam = m.RPM<int>(local_player + hazedumper::netvars::m_iTeamNum);
-        if (eTeam && eTeam != pTeam) {
+        if (teammates) {
+
             auto entity_health = m.RPM<int>(entity + hazedumper::netvars::m_iHealth);
             if (entity_health > 75) {
                 set_chams(entity, 255, 0, 0);
@@ -166,9 +139,23 @@ void main_ch::chams_func() {
                 set_chams(entity, 0, 0, 255);
             }
         } else {
-            set_chams(entity, 0, 255, 0);
+            auto eTeam = m.RPM<int>(entity + hazedumper::netvars::m_iTeamNum);
+            auto pTeam = m.RPM<int>(local_player + hazedumper::netvars::m_iTeamNum);
+            if (eTeam && eTeam != pTeam) {
+                auto entity_health = m.RPM<int>(entity + hazedumper::netvars::m_iHealth);
+                if (entity_health > 75) {
+                    set_chams(entity, 255, 0, 0);
+                } else if (entity_health > 50) {
+                    set_chams(entity, 255, 0, 255);
+                } else if (entity_health > 25) {
+                    set_chams(entity, 165, 0, 255);
+                } else {
+                    set_chams(entity, 0, 0, 255);
+                }
+            } else {
+                set_chams(entity, 0, 255, 0);
+            }
         }
-
     }
 }
 
@@ -190,11 +177,17 @@ void main_ch::triggerbot() {
             if (crosshair != 0 && crosshair < 64) {
                 auto entity = m.RPM<DWORD>(client + hazedumper::signatures::dwEntityList + (crosshair - 1) * 0x10);
                 if (entity) {
-                    int eTeam = m.RPM<int>(entity + hazedumper::netvars::m_iTeamNum);
-                    if (eTeam != pTeam && eTeam) {
-                        mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
-                        mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+                    if (teammates) {
+                        if (legit_trigger_bot) delay(50);
+                        click();
                         Sleep(100);
+                    } else {
+                        int eTeam = m.RPM<int>(entity + hazedumper::netvars::m_iTeamNum);
+                        if (eTeam != pTeam && eTeam) {
+                            if (legit_trigger_bot) delay(50);
+                            click();
+                            Sleep(100);
+                        }
                     }
                 }
             }
@@ -206,8 +199,11 @@ void main_ch::bunnyhop() {
     if (GetAsyncKeyState(VK_SPACE)) {
         auto local_player = m.RPM<DWORD>(client + hazedumper::signatures::dwLocalPlayer);
         auto player_state = m.RPM<int>(local_player + hazedumper::netvars::m_fFlags);
-
         if (player_state == 257) {
+            if (legit_bunny_hop) {
+                int random = rand() % 5;
+                if (!random) Sleep(50);
+            }
             mouse_event(MOUSEEVENTF_MIDDLEDOWN, 0, 0, 0, 0);
             mouse_event(MOUSEEVENTF_MIDDLEUP, 0, 0, 0, 0);
             Sleep(100);
@@ -233,12 +229,7 @@ void main_ch::recoil_control_system() {
     oPunch = punchAngle;
 }
 
-void main_ch::reset_chams() {
-    for (int i = 0; i < 64; i++) {
-        auto entity = m.RPM<DWORD>(client + hazedumper::signatures::dwEntityList + i * 0x10);
-        set_chams(entity, 255, 255, 255);
-    }
-}
+
 
 void main_ch::printEntityList() {
     std::cout << "Entity health list: " << std::endl;
@@ -270,4 +261,8 @@ void main_ch::antiaim() {
     */
 }
 
-
+void main_ch::printmyweapon() {
+    auto local_player = m.RPM<DWORD>(client + hazedumper::signatures::dwLocalPlayer);
+    auto weapon = m.RPM<int>(local_player + hazedumper::netvars::m_hActiveWeapon);
+    std::cout << weapon << std::endl;
+}
