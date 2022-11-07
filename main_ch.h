@@ -54,6 +54,7 @@ public:
 
     bool legit_trigger_bot = false;
     bool legit_bunny_hop = false;
+    bool anti_flash_delay = false;
     //bool anti_aim = false;
 
     memory_controller m;

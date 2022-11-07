@@ -46,6 +46,7 @@ void main_ch::set() {
     set_var(anti_flash, VK_F4);
     //set_var(anti_aim, VK_F6);
     set_var(RCS, VK_F7);
+    set_var(anti_flash_delay, VK_PRIOR);
 
     if (GetKeyState(VK_F8)) {
         if (!chams) {
@@ -87,7 +88,7 @@ void main_ch::print_cheat_menu() {
               << " -MEGA Legit RCS (Only X)" << std::endl
               << " -Legit RCS(Only Y) - F9" << std::endl << " -RCS(X and Y) - F11" << std::endl
               << " -Trigger bot and chams teammates " << teammates << std::endl << " -Legit trigger bot "
-              << legit_trigger_bot << std::endl << " -Legit bunny hop " << legit_bunny_hop
+              << legit_trigger_bot << std::endl << " -Legit bunny hop " << legit_bunny_hop << std::endl << " -Antiflash delay " << anti_flash_delay
               << "\n \n Exit cheat - INSERT"
               << std::endl << std::endl << std::endl << std::endl << std::endl << std::endl << std::endl << std::endl
               << std::string(120, '=');
@@ -163,13 +164,13 @@ void main_ch::antiflash() {
     auto local_player = m.RPM<DWORD>(client + hazedumper::signatures::dwLocalPlayer);
     auto flash = m.RPM<float>(local_player + hazedumper::netvars::m_flFlashDuration);
     if (flash > 0) {
+        if(anti_flash_delay) Sleep(200);
         m.WPM(local_player + hazedumper::netvars::m_flFlashDuration, 0);
     }
 }
 
 void main_ch::triggerbot() {
     if (GetAsyncKeyState(VK_MENU)) {
-
         auto local_player = m.RPM<DWORD>(client + hazedumper::signatures::dwLocalPlayer);
         if (local_player) {
             int pTeam = m.RPM<int>(local_player + hazedumper::netvars::m_iTeamNum);
