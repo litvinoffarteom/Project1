@@ -47,6 +47,7 @@ void main_ch::set() {
     //set_var(anti_aim, VK_F6);
     set_var(RCS, VK_F7);
     set_var(anti_flash_delay, VK_PRIOR);
+    set_var(wall_hack, VK_NEXT);
 
     if (GetKeyState(VK_F8)) {
         if (!chams) {
@@ -80,11 +81,12 @@ void main_ch::set() {
 
 void main_ch::print_cheat_menu() {
     system("cls");
+    /*
     std::cout << std::string(52, '=') << "LEGIT CSGO CHEAT" << std::string(52, '=')
               << "\n \n Functions of cheat:\n -Radarhack " << radar_hack << "\n -Bunnyhop " << bunny_hop
               << "\n -Trigger Bot (ALT) " << trigger_bot << "\n" << " -Antiflash " << anti_flash << "\n -Chams "
               << chams
-              << "\n -RCS (F7) " << RCS << std::endl << std::endl << "Settings: " << std::endl
+              << "\n -RCS (F7) " << RCS << "\n -Glow Wallhack "<< wall_hack << std::endl << std::endl << "Settings: " << std::endl
               << " -MEGA Legit RCS (Only X)" << std::endl
               << " -Legit RCS(Only Y) - F9" << std::endl << " -RCS(X and Y) - F11" << std::endl
               << " -Trigger bot and chams teammates " << teammates << std::endl << " -Legit trigger bot "
@@ -92,6 +94,9 @@ void main_ch::print_cheat_menu() {
               << "\n \n Exit cheat - INSERT"
               << std::endl << std::endl << std::endl << std::endl << std::endl << std::endl << std::endl << std::endl
               << std::string(120, '=');
+    */
+
+
 }
 
 main_ch::main_ch() {
@@ -128,31 +133,12 @@ void main_ch::chams_func() {
         auto local_player = m.RPM<DWORD>(client + hazedumper::signatures::dwLocalPlayer);
         auto entity = m.RPM<DWORD>(client + hazedumper::signatures::dwEntityList + i * 0x10);
         if (teammates) {
-
-            auto entity_health = m.RPM<int>(entity + hazedumper::netvars::m_iHealth);
-            if (entity_health > 75) {
-                set_chams(entity, 255, 0, 0);
-            } else if (entity_health > 50) {
-                set_chams(entity, 255, 0, 255);
-            } else if (entity_health > 25) {
-                set_chams(entity, 165, 0, 255);
-            } else {
-                set_chams(entity, 0, 0, 255);
-            }
+            set_chams(entity, 255, 0, 0);
         } else {
             auto eTeam = m.RPM<int>(entity + hazedumper::netvars::m_iTeamNum);
             auto pTeam = m.RPM<int>(local_player + hazedumper::netvars::m_iTeamNum);
             if (eTeam && eTeam != pTeam) {
-                auto entity_health = m.RPM<int>(entity + hazedumper::netvars::m_iHealth);
-                if (entity_health > 75) {
-                    set_chams(entity, 255, 0, 0);
-                } else if (entity_health > 50) {
-                    set_chams(entity, 255, 0, 255);
-                } else if (entity_health > 25) {
-                    set_chams(entity, 165, 0, 255);
-                } else {
-                    set_chams(entity, 0, 0, 255);
-                }
+                set_chams(entity, 255, 0, 0);
             } else {
                 set_chams(entity, 0, 255, 0);
             }
@@ -261,9 +247,109 @@ void main_ch::antiaim() {
     Sleep(150);
     */
 }
+void main_ch::wallhack(){
+    auto glow_object_manager = m.RPM<DWORD>(client + hazedumper::signatures::dwGlowObjectManager);
+    auto local_player = m.RPM<DWORD>(client + hazedumper::signatures::dwLocalPlayer);
+    auto p_team = m.RPM<int>(local_player + hazedumper::netvars::m_iTeamNum);
+    for(int i = 1; i < 64; i++){
+        auto entity = m.RPM<DWORD>(client + hazedumper::signatures::dwEntityList + i * 0x10);
 
+        if(entity){
+            auto glow_index = m.RPM<int>(entity + hazedumper::netvars::m_iGlowIndex);
+            auto e_team = m.RPM<int>(entity + hazedumper::netvars::m_iTeamNum);
+            if(e_team != p_team){
+                auto e_health = m.RPM<int>(entity + hazedumper::netvars::m_iHealth);
+                if(e_health > 75){
+                    m.WPM(
+                            glow_object_manager + (0x38 * glow_index) + 0x8,
+                            color4_t{ v::other_team_glow_100.second }
+                    );
+                }else if(e_health > 50){
+                    m.WPM(
+                            glow_object_manager + (0x38 * glow_index) + 0x8,
+                            color4_t{ v::other_team_glow_75.second }
+                    );
+                }else if(e_health > 25){
+                    m.WPM(
+                            glow_object_manager + (0x38 * glow_index) + 0x8,
+                            color4_t{ v::other_team_glow_50.second }
+                    );
+                }else{
+                    m.WPM(
+                            glow_object_manager + (0x38 * glow_index) + 0x8,
+                            color4_t{ v::other_team_glow_25.second }
+                    );
+                }
+
+            }else{
+                m.WPM(
+                        glow_object_manager + (0x38 * glow_index) + 0x8,
+                        color4_t{ v::my_team_glow.second }
+                );
+            }
+            constexpr struct visible_t { bool a{ true }, b{ false }; }vis;
+            m.WPM(glow_object_manager + (0x38 * glow_index) + 0x28, vis);
+        }
+    }
+}
 void main_ch::printmyweapon() {
     auto local_player = m.RPM<DWORD>(client + hazedumper::signatures::dwLocalPlayer);
     auto weapon = m.RPM<int>(local_player + hazedumper::netvars::m_hActiveWeapon);
     std::cout << weapon << std::endl;
+}
+
+void main_ch::welcome() {
+    system("cls");
+    int d = 100;
+    std::cout<<'W';
+    Sleep(d);
+    std::cout<<'e';
+    Sleep(d);
+    std::cout<<'l';
+    Sleep(d);
+    std::cout<<'c';
+    Sleep(d);
+    std::cout<<'o';
+    Sleep(d);
+    std::cout<<'m';
+    Sleep(d);
+    std::cout<<'e';
+    Sleep(d);
+    std::cout<<' ';
+    Sleep(d);
+    std::cout<<'t';
+    Sleep(d);
+    std::cout<<'o';
+    Sleep(d);
+    std::cout<<' ';
+    Sleep(d);
+    std::cout<<'m';
+    Sleep(d);
+    std::cout<<'y';
+    Sleep(d);
+    std::cout<<' ';
+    Sleep(d);
+    std::cout<<'C';
+    Sleep(d);
+    std::cout<<'S';
+    Sleep(d);
+    std::cout<<':';
+    Sleep(d);
+    std::cout<<'G';
+    Sleep(d);
+    std::cout<<'O';
+    Sleep(d);
+    std::cout<<' ';
+    Sleep(d);
+    std::cout<<'C';
+    Sleep(d);
+    std::cout<<'h';
+    Sleep(d);
+    std::cout<<'e';
+    Sleep(d);
+    std::cout<<'a';
+    Sleep(d);
+    std::cout<<'t';
+    Sleep(d + 200);
+    system("cls");
 }

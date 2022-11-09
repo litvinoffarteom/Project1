@@ -1,3 +1,4 @@
+#include <thread>
 #include "memory_controller.h"
 #include "main_ch.h"
 
@@ -6,10 +7,13 @@ const CHAR *name = "Counter-Strike: Global Offensive - Direct3D 9";
 int main() {
     srand(time(NULL));
     main_ch cheat(name);
+    //cheat.welcome();
     cheat.print_cheat_menu();
     while (!GetAsyncKeyState(VK_INSERT)) {
         cheat.set();
-
+        if(cheat.wall_hack){
+            cheat.wallhack();
+        }
         if (cheat.RCS) {
             cheat.recoil_control_system();
         }
