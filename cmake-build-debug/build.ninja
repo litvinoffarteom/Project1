@@ -61,12 +61,6 @@ build CMakeFiles/Project1.dir/memory_controller.cpp.obj: CXX_COMPILER__Project1_
   OBJECT_DIR = CMakeFiles\Project1.dir
   OBJECT_FILE_DIR = CMakeFiles\Project1.dir
 
-build CMakeFiles/Project1.dir/main_ch.cpp.obj: CXX_COMPILER__Project1_Debug D$:/Projects/Project1/main_ch.cpp || cmake_object_order_depends_target_Project1
-  DEP_FILE = CMakeFiles\Project1.dir\main_ch.cpp.obj.d
-  FLAGS = -g
-  OBJECT_DIR = CMakeFiles\Project1.dir
-  OBJECT_FILE_DIR = CMakeFiles\Project1.dir
-
 
 # =============================================================================
 # Link build statements for EXECUTABLE target Project1
@@ -75,7 +69,7 @@ build CMakeFiles/Project1.dir/main_ch.cpp.obj: CXX_COMPILER__Project1_Debug D$:/
 #############################################
 # Link the executable Project1.exe
 
-build Project1.exe: CXX_EXECUTABLE_LINKER__Project1_Debug CMakeFiles/Project1.dir/main.cpp.obj CMakeFiles/Project1.dir/memory_controller.cpp.obj CMakeFiles/Project1.dir/main_ch.cpp.obj
+build Project1.exe: CXX_EXECUTABLE_LINKER__Project1_Debug CMakeFiles/Project1.dir/main.cpp.obj CMakeFiles/Project1.dir/memory_controller.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\Project1.dir
