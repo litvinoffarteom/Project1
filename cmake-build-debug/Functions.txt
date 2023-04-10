@@ -1,0 +1,16 @@
+F1 - RadarHack
+F2 - BunnyHop
+F3 - Trigger Bot (Alt)
+F4 - Antiflash
+F6 - Hide Cheat
+F7 - RCS
+F8 - Chams
+Page Down - Wallhack
+
+Settings:
+F11 - full RCS 
+Home - Y RCS
+F9 - X RCS
+
+Other:
+Delete - Config Menu

@@ -1,40 +1,59 @@
+#include "hacks.h"
 #include <thread>
-#include "memory_controller.h"
-#include "main_ch.h"
 
-const CHAR *name = "Counter-Strike: Global Offensive - Direct3D 9";
+hacks cheat;
 
-int main() {
-    srand(time(NULL));
-    main_ch cheat(name);
-    //cheat.welcome();
-    cheat.print_cheat_menu();
-    while (!GetAsyncKeyState(VK_INSERT)) {
+void functions() {
+    while (true) {
+        cheat.radarhack();
+        cheat.antiflash();
+        cheat.chams_func();
         cheat.set();
-        if(cheat.wall_hack){
-            cheat.wallhack();
-        }
-        if (cheat.RCS) {
-            cheat.recoil_control_system();
-        }
-        if (cheat.radar_hack) {
-            cheat.radarhack();
-        }
-        if (cheat.chams) {
-            cheat.chams_func();
-        }
-        if (cheat.anti_flash) {
-            cheat.antiflash();
-        }
-        if (cheat.trigger_bot) {
-            cheat.triggerbot();
-        }
-        if (cheat.bunny_hop) {
-            cheat.bunnyhop();
+        if (cheat.cfg.close) {
+            cheat.reset_chams();
+            break;
         }
     }
+}
 
-    cheat.reset_chams();
+void wallhack() {
+    while (true) {
+        cheat.wallhack();
+    }
+}
 
+void bunny_hop() {
+    while (true) {
+        cheat.bunnyhop();
+    }
+}
+
+void trigger_bot() {
+    while (true) {
+        cheat.triggerbot();
+    }
+}
+
+void recoil_control_system() {
+    while (true) {
+        cheat.recoil_control_system();
+    }
+}
+
+int main() {
+    MessageBox(::GetConsoleWindow(), NULL, NULL, MB_OK);
+    ::ShowWindow(::GetConsoleWindow(), SW_HIDE);
+    cheat.print_cheat_menu();
+    std::thread funcs(functions);
+    std::thread wh(wallhack);
+    std::thread bh(bunny_hop);
+    std::thread tb(trigger_bot);
+    std::thread rcs(recoil_control_system);
+
+    wh.detach();
+    bh.detach();
+    tb.detach();
+    rcs.detach();
+    funcs.join();
     return 0;
 }
